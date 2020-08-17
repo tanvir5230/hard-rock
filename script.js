@@ -3,6 +3,9 @@ const inputField = document.getElementById("song-name-input");
 const submitBtn = document.getElementById("submit");
 let lyricsHtml = "";
 let lyrics = "";
+let lyricsDiv = document.createElement("div");
+console.log(lyricsDiv);
+let lyricsContainer = "";
 function findingSong() {
   const searchedSong = inputField.value;
   fetch(`https://api.lyrics.ovh/suggest/${searchedSong}`)
@@ -19,12 +22,12 @@ inputField.addEventListener("keypress", () => {
   }
 });
 
-function display(data) {
+const display = (data) => {
   const songList = data.data;
   songList.map((data, index) => {
     if (index <= 9) {
       const songInfo = `
-        <div class="search-result col-md-8 mx-auto">
+        <div class="search-result col-md-8 mx-auto" id="song-div-${index}">
           <div class="single-result row align-items-center my-3 p-3">
             <div class="col-md-9">
               <h3 class="lyrics-name">${data.title}</h3>
@@ -40,32 +43,69 @@ function display(data) {
       const artist = data.artist.name;
       const title = data.title;
       lyricsButton.addEventListener("click", () => {
+        let songDiv = document.getElementById(`song-div-${index}`);
+        songDiv.insertAdjacentElement("afterend", lyricsDiv);
+        lyricsContainer = document.createElement("div");
+        lyricsContainer.innerHTML = `
+        <div class="text-center">
+          <p><span class="spinner-border"></span></p>
+          <p>loading...</p>
+        </div>
+        `;
+        lyricsDiv.insertAdjacentElement("beforeend", lyricsContainer);
         getLyrics(artist, title);
-        let lyricsContainer = document.createElement("div");
-        lyricsContainer.innerHTML = lyricsHtml;
-        event.target.parentElement.parentElement.appendChild(lyricsContainer);
       });
     }
   });
-}
+};
 
 const getLyrics = async (artist, title) => {
   await fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`)
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status == "200") {
+        return res.json();
+      }
+    })
     .then((data) => {
       lyrics = data.lyrics;
-    })
-    .catch((err) => {
-      lyrics = err.error;
-    });
-  lyricsHtml = `
+      lyricsHtml = `
     <div class="single-lyrics text-center">
         <button class="btn go-back">&lsaquo;</button>
         <h2 class="text-success mb-4">
-          <span>${title}</span>
-          <span>&#x274C;</span>
+          <span class="text-center">${title}</span>
+          <button class="btn cross-btn">&#x274C;</button>
         </h2>
-        <pre>${lyrics}</pre>
+        <pre class="text-white text-center">${lyrics}</pre>
     </div>
         `;
+      lyricsContainer = document.createElement("div");
+      lyricsContainer.classList.add("col-12");
+      lyricsContainer.innerHTML = lyricsHtml;
+    })
+    .catch(() => {
+      let error = "No lyrics found.";
+      lyrics = error;
+      lyricsHtml = `
+    <div class="single-lyrics text-center">
+        <button class="btn go-back">&lsaquo;</button>
+        <h2 class="text-success mb-4">
+          <span class="text-center">${title}</span>
+          <button class="btn cross-btn">&#x274C;</button>
+        </h2>
+        <pre class="text-white text-center">${lyrics}</pre>
+    </div>
+        `;
+      lyricsContainer = document.createElement("div");
+      lyricsContainer.classList.add("col-12");
+      lyricsContainer.innerHTML = lyricsHtml;
+    });
+  lyricsDiv.innerHTML = "";
+  lyricsDiv.insertAdjacentElement("beforeend", lyricsContainer);
+  const crossBtn = document.getElementsByClassName("cross-btn");
+  for (let i = 0; i < crossBtn.length; i++) {
+    const element = crossBtn[i];
+    element.addEventListener("click", () => {
+      event.target.parentElement.parentElement.remove();
+    });
+  }
 };
