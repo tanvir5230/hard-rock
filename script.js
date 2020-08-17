@@ -4,13 +4,14 @@ const submitBtn = document.getElementById("submit");
 let lyricsHtml = "";
 let lyrics = "";
 let lyricsDiv = document.createElement("div");
-console.log(lyricsDiv);
 let lyricsContainer = "";
+
+// finding the songs
 function findingSong() {
   const searchedSong = inputField.value;
   fetch(`https://api.lyrics.ovh/suggest/${searchedSong}`)
     .then((response) => response.json())
-    .then((data) => display(data))
+    .then((data) => displaySong(data))
     .catch((err) => alert(err));
   inputField.value = "";
   inputField.focus();
@@ -22,7 +23,9 @@ inputField.addEventListener("keypress", () => {
   }
 });
 
-const display = (data) => {
+// display 10 songs info in the view
+const displaySong = (data) => {
+  searchResultContainer.innerHTML = "";
   const songList = data.data;
   songList.map((data, index) => {
     if (index <= 9) {
@@ -42,6 +45,8 @@ const display = (data) => {
       const lyricsButton = document.getElementById(`btn-${index}`);
       const artist = data.artist.name;
       const title = data.title;
+
+      // lyrics Display event
       lyricsButton.addEventListener("click", () => {
         let songDiv = document.getElementById(`song-div-${index}`);
         songDiv.insertAdjacentElement("afterend", lyricsDiv);
@@ -59,6 +64,7 @@ const display = (data) => {
   });
 };
 
+// getting the lyrics
 const getLyrics = async (artist, title) => {
   await fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`)
     .then((res) => {
