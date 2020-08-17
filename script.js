@@ -42,12 +42,13 @@ const displaySong = (data) => {
         </div>
           `;
       searchResultContainer.insertAdjacentHTML("beforeend", songInfo);
-      const lyricsButton = document.getElementById(`btn-${index}`);
+      const getLyricsButton = document.getElementById(`btn-${index}`);
       const artist = data.artist.name;
       const title = data.title;
 
       // lyrics Display event
-      lyricsButton.addEventListener("click", () => {
+      getLyricsButton.addEventListener("click", () => {
+        lyricsDiv.innerHTML = "";
         let songDiv = document.getElementById(`song-div-${index}`);
         songDiv.insertAdjacentElement("afterend", lyricsDiv);
         lyricsContainer = document.createElement("div");
@@ -76,7 +77,6 @@ const getLyrics = async (artist, title) => {
       lyrics = data.lyrics;
       lyricsHtml = `
     <div class="single-lyrics text-center">
-        <button class="btn go-back">&lsaquo;</button>
         <h2 class="text-success mb-4">
           <span class="text-center">${title}</span>
           <button class="btn cross-btn">&#x274C;</button>
@@ -93,7 +93,6 @@ const getLyrics = async (artist, title) => {
       lyrics = error;
       lyricsHtml = `
     <div class="single-lyrics text-center">
-        <button class="btn go-back">&lsaquo;</button>
         <h2 class="text-success mb-4">
           <span class="text-center">${title}</span>
           <button class="btn cross-btn">&#x274C;</button>
