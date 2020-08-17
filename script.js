@@ -30,7 +30,7 @@ const displaySong = (data) => {
   songList.map((data, index) => {
     if (index <= 9) {
       const songInfo = `
-        <div class="search-result col-md-8 mx-auto" id="song-div-${index}">
+        <div class="search-result col-md-8 mx-auto text-center text-md-left" id="song-div-${index}">
           <div class="single-result row align-items-center my-3 p-3">
             <div class="col-md-9">
               <h3 class="lyrics-name">${data.title}</h3>
