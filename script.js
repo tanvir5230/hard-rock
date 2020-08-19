@@ -1,11 +1,17 @@
 const searchResultContainer = document.getElementById("search-result");
 const inputField = document.getElementById("song-name-input");
 const submitBtn = document.getElementById("submit");
+let loaderHtml = `
+        <div class="text-center">
+          <p><span class="spinner-border"></span></p>
+          <p>loading...</p>
+        </div>
+        `;
 let lyricsHtml = "";
 let lyrics = "";
 let lyricsDiv = document.createElement("div");
+let previewDiv = document.createElement("div");
 let lyricsContainer = "";
-
 // finding the songs
 function findingSong() {
   const searchedSong = inputField.value;
@@ -35,6 +41,7 @@ const displaySong = (data) => {
             <div class="col-md-9">
               <h3 class="lyrics-name">${data.title}</h3>
               <p class="author lead">Album by <span>${data.artist.name}</span></p>
+              <button class="btn btn-warning my-2 my-md-0" id="preview-${index}">preview</button>
             </div>
             <div class="col-md-3 text-md-right text-center">
               <button class="btn btn-success lyrics-btn" id="btn-${index}">Get Lyrics</button>
@@ -42,22 +49,31 @@ const displaySong = (data) => {
         </div>
           `;
       searchResultContainer.insertAdjacentHTML("beforeend", songInfo);
-      const getLyricsButton = document.getElementById(`btn-${index}`);
+      let songDiv = document.getElementById(`song-div-${index}`);
       const artist = data.artist.name;
       const title = data.title;
 
+      // preview event
+      const previewBtn = document.getElementById("preview-" + index);
+      const previewURL = data.preview;
+      previewBtn.addEventListener("click", () => {
+        previewDiv.innerHTML = "";
+        songDiv.insertAdjacentElement("afterend", previewDiv);
+        let previewContainer = `<div class="d-flex flex-column justify-content-center align-items-center">
+                  <button class="btn cross-btn">&#x274C;</button>
+        <iframe src="${previewURL}" frameborder="0"></iframe>
+        </div>`;
+        previewDiv.innerHTML = previewContainer;
+        deleteNode();
+      });
+
       // lyrics Display event
+      const getLyricsButton = document.getElementById(`btn-${index}`);
       getLyricsButton.addEventListener("click", () => {
         lyricsDiv.innerHTML = "";
-        let songDiv = document.getElementById(`song-div-${index}`);
         songDiv.insertAdjacentElement("afterend", lyricsDiv);
         lyricsContainer = document.createElement("div");
-        lyricsContainer.innerHTML = `
-        <div class="text-center">
-          <p><span class="spinner-border"></span></p>
-          <p>loading...</p>
-        </div>
-        `;
+        lyricsContainer.innerHTML = loaderHtml;
         lyricsDiv.insertAdjacentElement("beforeend", lyricsContainer);
         getLyrics(artist, title);
       });
@@ -106,6 +122,10 @@ const getLyrics = async (artist, title) => {
     });
   lyricsDiv.innerHTML = "";
   lyricsDiv.insertAdjacentElement("beforeend", lyricsContainer);
+  deleteNode();
+};
+
+function deleteNode() {
   const crossBtn = document.getElementsByClassName("cross-btn");
   for (let i = 0; i < crossBtn.length; i++) {
     const element = crossBtn[i];
@@ -113,4 +133,4 @@ const getLyrics = async (artist, title) => {
       event.target.parentElement.parentElement.remove();
     });
   }
-};
+}
