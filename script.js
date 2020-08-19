@@ -42,6 +42,7 @@ const displaySong = (data) => {
               <h3 class="lyrics-name">${data.title}</h3>
               <p class="author lead">Album by <span>${data.artist.name}</span></p>
               <button class="btn btn-warning my-2 my-md-0" id="preview-${index}">preview</button>
+              <a  target="_blank" class="btn btn-info" href="${data.link}">full song</a>
             </div>
             <div class="col-md-3 text-md-right text-center">
               <button class="btn btn-success lyrics-btn" id="btn-${index}">Get Lyrics</button>
@@ -52,12 +53,12 @@ const displaySong = (data) => {
       let songDiv = document.getElementById(`song-div-${index}`);
       const artist = data.artist.name;
       const title = data.title;
-
       // preview event
       const previewBtn = document.getElementById("preview-" + index);
       const previewURL = data.preview;
       previewBtn.addEventListener("click", () => {
         previewDiv.innerHTML = "";
+        lyricsDiv.innerHTML = "";
         songDiv.insertAdjacentElement("afterend", previewDiv);
         let previewContainer = `<div class="d-flex flex-column justify-content-center align-items-center">
                   <button class="btn cross-btn">&#x274C;</button>
@@ -71,6 +72,7 @@ const displaySong = (data) => {
       const getLyricsButton = document.getElementById(`btn-${index}`);
       getLyricsButton.addEventListener("click", () => {
         lyricsDiv.innerHTML = "";
+        previewDiv.innerHTML = "";
         songDiv.insertAdjacentElement("afterend", lyricsDiv);
         lyricsContainer = document.createElement("div");
         lyricsContainer.innerHTML = loaderHtml;
