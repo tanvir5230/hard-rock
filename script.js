@@ -10,7 +10,6 @@ let loaderHtml = `
 let lyricsHtml = "";
 let lyrics = "";
 let lyricsDiv = document.createElement("div");
-let previewDiv = document.createElement("div");
 let lyricsContainer = "";
 // finding the songs
 function findingSong() {
@@ -41,7 +40,6 @@ const displaySong = (data) => {
             <div class="col-md-9">
               <h3 class="lyrics-name">${data.title}</h3>
               <p class="author lead">Album by <span>${data.artist.name}</span></p>
-              <button class="btn btn-warning my-2 my-md-0" id="preview-${index}">preview</button>
               <a  target="_blank" class="btn btn-info" href="${data.link}">full song</a>
             </div>
             <div class="col-md-3 text-md-right text-center">
@@ -53,26 +51,11 @@ const displaySong = (data) => {
       let songDiv = document.getElementById(`song-div-${index}`);
       const artist = data.artist.name;
       const title = data.title;
-      // preview event
-      const previewBtn = document.getElementById("preview-" + index);
-      const previewURL = data.preview;
-      previewBtn.addEventListener("click", () => {
-        previewDiv.innerHTML = "";
-        lyricsDiv.innerHTML = "";
-        songDiv.insertAdjacentElement("afterend", previewDiv);
-        let previewContainer = `<div class="d-flex flex-column justify-content-center align-items-center">
-                  <button class="btn cross-btn">&#x274C;</button>
-        <iframe src="${previewURL}" frameborder="0"></iframe>
-        </div>`;
-        previewDiv.innerHTML = previewContainer;
-        deleteNode();
-      });
 
       // lyrics Display event
       const getLyricsButton = document.getElementById(`btn-${index}`);
       getLyricsButton.addEventListener("click", () => {
         lyricsDiv.innerHTML = "";
-        previewDiv.innerHTML = "";
         songDiv.insertAdjacentElement("afterend", lyricsDiv);
         lyricsContainer = document.createElement("div");
         lyricsContainer.innerHTML = loaderHtml;
