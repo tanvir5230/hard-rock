@@ -38,8 +38,11 @@ const displaySong = (data) => {
         <div class="search-result col-md-8 mx-auto text-center text-md-left" id="song-div-${index}">
           <div class="single-result row align-items-center my-3 p-3">
             <div class="col-md-9">
-              <h3 class="lyrics-name">${data.title}</h3>
-              <p class="author lead">Album by <span>${data.artist.name}</span></p>
+              <div>
+                <img src="${data.album.cover}" alt="${data.title}" class="rounded float-left mr-3 mt-2">
+                <h3 class="lyrics-name">${data.title}</h3>
+                <p class="author lead">Album by <span>${data.artist.name}</span></p>
+              </div>
               <a  target="_blank" class="btn btn-info" href="${data.link}">full song</a>
             </div>
             <div class="col-md-3 text-md-right text-center">
